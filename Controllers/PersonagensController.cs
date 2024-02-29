@@ -11,7 +11,7 @@ using RpgApi.Models;
 
 namespace RpgApi.Controllers
 {   
-    [Authorize]
+    [Authorize(Roles = "Admin, Jogador")]
     [ApiController]
     [Route("[Controller]")]
     public class PersonagensController : ControllerBase
@@ -27,6 +27,33 @@ namespace RpgApi.Controllers
             _context = context;
             _httpContextAccessor = httpContextAccessor;
         }
+
+        private string ObterPerfilUsuario()
+        {
+            return _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+        }
+
+        [HttpGet("GetByPerfil")]
+        public async Task<IActionResult> GetByPerfilAsync()
+        {
+            try
+            {
+                List<Personagem> lista = new List<Personagem>();
+
+                if (ObterPerfilUsuario() == "Admin")
+                    lista = await _context.TB_PERSONAGENS.ToListAsync();
+                else
+                {
+                    lista = await _context.TB_PERSONAGENS.Where(p => p.Usuario.Id == ObterUsuarioId()).ToListAsync();
+                }
+                return Ok(lista);
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message + '-' +  ex.InnerException);
+            }
+        }
+        
 
 
         [HttpGet("{id}")] //Buscar pelo id
@@ -45,7 +72,7 @@ namespace RpgApi.Controllers
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(ex.Message + '-' +  ex.InnerException);
             }
         }
 
@@ -60,7 +87,7 @@ namespace RpgApi.Controllers
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(ex.Message + '-' +  ex.InnerException);
             }
         }
 
@@ -85,7 +112,7 @@ namespace RpgApi.Controllers
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(ex.Message + '-' +  ex.InnerException);
             }
         }
 
@@ -109,7 +136,7 @@ namespace RpgApi.Controllers
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(ex.Message + '-' +  ex.InnerException);
             }
         }
 
@@ -126,7 +153,7 @@ namespace RpgApi.Controllers
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(ex.Message + '-' +  ex.InnerException);
             }
         }
 
@@ -143,7 +170,7 @@ namespace RpgApi.Controllers
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(ex.Message + '-' +  ex.InnerException);
             }
         }
 
@@ -167,7 +194,7 @@ namespace RpgApi.Controllers
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(ex.Message + '-' +  ex.InnerException);
             }
         }
 
@@ -187,7 +214,7 @@ namespace RpgApi.Controllers
                 return Ok(linhasAfetadas); 
             }
             catch (System.Exception ex)
-            { return BadRequest(ex.Message);}}
+            { return BadRequest(ex.Message + '-' +  ex.InnerException);}}
 
             [HttpPut("ZerarRanking")]
         public async Task<IActionResult> ZerarRankingAsync(Personagem p)
@@ -215,7 +242,7 @@ namespace RpgApi.Controllers
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(ex.Message + '-' +  ex.InnerException);
             }
         }
 
@@ -236,7 +263,7 @@ namespace RpgApi.Controllers
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(ex.Message + '-' +  ex.InnerException);
             }
         }
 
@@ -257,7 +284,7 @@ namespace RpgApi.Controllers
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(ex.Message + '-' +  ex.InnerException);
             }
         }
 
@@ -279,7 +306,7 @@ namespace RpgApi.Controllers
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(ex.Message + '-' +  ex.InnerException);
             }
         }
 
